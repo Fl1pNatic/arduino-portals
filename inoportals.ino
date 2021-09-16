@@ -11,10 +11,8 @@ float Speed = startSpeed;/*Sets speed to the starting speed
 Speed does change and all the other functions use it
 Starting speed doesn't change and speed uses it as a starting value(thx cap)
 */
-bool debug = true; //Debug mode(not made yet)
 bool enableAccel = true;//Enable acceleration(if turned on - will be 
 bool enableVert = true;
-bool enableFake = true;
 void setup() {
   pinMode(2, OUTPUT);//Left button
   pinMode(3, OUTPUT);//Right button
@@ -24,8 +22,7 @@ void setup() {
 }
 
 void loop() {
-    Serial.println(x + "<- X Y -> " + y);//Prints out X and Y of the circle to Serial port
-    if(digitalRead(3) == 1 && digitalRead(2) != 1){ //Makes the circle go right
+    if(digitalRead(5) == 1 && digitalRead(4) != 1){ //Makes the circle go right
       x = x+Speed;
       delay(10);
       //Makes the circle accelerate if the var is true
@@ -33,7 +30,7 @@ void loop() {
         Speed = Speed + accelAmount; 
       }
     }
-    if(digitalRead(2) == 1 && digitalRead(3) != 1) {//Makes the circle go left
+    if(digitalRead(4) == 1 && digitalRead(5) != 1) {//Makes the circle go left
       x = x-Speed;
       delay(10);
       //Makes the circle accelerate if the var is true
@@ -54,15 +51,23 @@ void loop() {
     if(y <= 0){
       y = 63;
     }
-    //Makes the ball move down if both buttons are pressed and enableVert is true
-    if(digitalRead(2) == 1 && digitalRead(3) == 1 && enableVert == true){
-      y = y+Speed;
+    //Makes the ball move down
+    if(digitalRead(2) == 1 && digitalRead(3) != 1 && enableVert == true){
+      y = y-Speed;
       //Makes the circle accelerate if the var is true
       if(enableAccel == true){
         Speed = Speed+0.1; 
       }
     }
-    if(digitalRead(2) == 0 && digitalRead(3) == 0 && enableAccel == true){//If all buttons are released and acceleration is enabled - Speed gets set to starting speed
+    //Makes the ball move up
+    if(digitalRead(3) == 1 && digitalRead(2) != 1 && enableVert == true){
+      y = y+Speed;
+      //Makes the circle accelerate if the var is true
+      if(enableAccel == true){
+        Speed = Speed+0.1; 
+      }
+    }    
+    if(digitalRead(2) == 0 && digitalRead(3) == 0 && digitalRead(4) == 0 && digitalRead(5) == 0 && enableAccel == true){//If all buttons are released and acceleration is enabled - Speed gets set to starting speed
       Speed = startSpeed;
     }
     if(Speed > maxSpeed){//If speed exceeds max speed it gets set back to it
@@ -75,24 +80,5 @@ void loop() {
     screen.drawLine(127, 64, 127, 0);
     screen.drawLine(0, 63, 128, 63);
     screen.drawLine(0, 1, 128, 1);
-    //If fakes are enabled - Use them
-    if(enableFake == true){
-      fake();
-    }
     screen.update();//Updates the screen
-}
-
-void fake(){ //Simulates real portal by drawing a second circle when the main circle is near the edge of the wall(needs to be finished by picking right co-ordinates to draw circle on)
-    if(x == 123){
-      screen.drawCircle(1, y, 5);
-    }
-    if(x == 124){
-      screen.drawCircle(2, y, 5);
-    }
-    if(x == 125){
-      screen.drawCircle(3, y, 5);
-    }
-    if(x == 126){
-      screen.drawCircle(5, y, 5);
-    }
 }
