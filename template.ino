@@ -2,6 +2,8 @@
 OLED  screen(SDA, SCL, 8);
 extern uint8_t SmallFont[];
 void setup() {
+  screen.begin();
+  screen.setFont(SmallFont);  
   //Sets pinmodes for 4 buttons that I have
   pinMode(2, OUTPUT);
   pinMode(3, OUTPUT);
